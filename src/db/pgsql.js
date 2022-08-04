@@ -4,10 +4,10 @@ const { Pool } = pkg;
 
 const connection = new Pool({
   host: 'localhost',
-  port: 55000,
-  user: 'postgres',
-  password: 'postgrespw',
-  database: 'boardcamp'
+  port: 5432,
+  user: 'macmini',
+  password: '#Inco2022',
+  database: 'shortly'
 });
 
 export default connection;
