@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createUrl, getUrlById, getShortUrl, deleteUrlById } from '../controllers/urlsController.js';
-import { urlValidate } from '../middlewares/urlValidate';
+import { urlValidate } from '../middlewares/urlValidate.js';
 
 const categoryRouter = Router();
 

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { signUp, signIn,  getUserMe, getRanking } from '../controllers/usersController.js';
-import { signupValidate } from '../middlewares/signupValidate';
-import { signinValidate } from '../middlewares/signinValidate';
+import { signupValidate } from '../middlewares/signupValidate.js';
+import { signinValidate } from '../middlewares/signinValidate.js';
 
 const categoryRouter = Router();
 

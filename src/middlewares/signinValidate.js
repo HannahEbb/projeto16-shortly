@@ -1,4 +1,4 @@
-import signinSchema from "../schemas/signinSchema";
+import signinSchema from "../schemas/signinSchema.js";
 
 export function signinValidate (req, res, next) {
     const data = req.body;
