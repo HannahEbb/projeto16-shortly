@@ -1,14 +1,15 @@
 import { Router } from 'express';
-import { signUp, signIn,  getUserMe, getRanking } from '../controllers/usersController.js';
+import { signUp, signIn, getUserMe } from '../controllers/usersController.js';
+//import { signUp, signIn,  getUserMe, getRanking } from '../controllers/usersController.js';
 import { signupValidate } from '../middlewares/signupValidate.js';
 import { signinValidate } from '../middlewares/signinValidate.js';
 
-const categoryRouter = Router();
+const usersRouter = Router();
 
 usersRouter.post('/signup', signupValidate, signUp);
 usersRouter.post('/signin', signinValidate, signIn);
 usersRouter.get('/users/me', getUserMe);
-usersRouter.get('/ranking', getRanking);
+//usersRouter.get('/ranking', getRanking);
 
 
-export default categoryRouter;
+export default usersRouter;
