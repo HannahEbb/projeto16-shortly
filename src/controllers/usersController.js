@@ -41,7 +41,6 @@ export async function signIn(req, res) {
             postedData.email
         ]);
 
-        console.log(user);
         const passwordCrypt = compareSync(postedData.password, user[0].password);
 
         if(user && passwordCrypt) {
@@ -69,9 +68,7 @@ export async function signIn(req, res) {
     }
 }
 
-export async function getUserMe(req, res) {
-    
-}
+//export async function getUserMe(req, res) {}
 
 
 

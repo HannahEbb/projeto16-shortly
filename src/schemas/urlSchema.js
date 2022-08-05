@@ -1,7 +1,7 @@
 import joi from "joi";
 
 const categorySchema = joi.object({
-    url: joi.string().required()
+    url: joi.string().uri().required()
   });
   
-  export default categorySchema;
+  export default categorySchema; 
