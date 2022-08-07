@@ -32,7 +32,6 @@ export async function signUp(req, res) {
     }
 }
 
-
 export async function signIn(req, res) {
     try {
         const postedData = req.body;
@@ -68,12 +67,67 @@ export async function signIn(req, res) {
     }
 }
 
-//export async function getUserMe(req, res) {}
+export async function getUserMe(req, res) {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const data = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(!data) {
+            return res.sendStatus(401); //token inexistente 
+        }
+
+        const { rows: user, rowCount } = await connection.query('SELECT * FROM users WHERE id = $1', [
+            data.userId
+        ]);
+
+        if(rowCount > 0) {
+            const { rows: urlData } = await connection.query('SELECT id, "shortUrl", url, "visitCount" FROM urls WHERE "userId" = $1', 
+            [user[0].id]
+            );
+
+            const { rows: totalVisits } = await connection.query('SELECT SUM("visitCount") as "visitCount" FROM urls WHERE "userId" = $1',
+            [user[0].id]);
+
+            const result = {
+                "id": user[0].id,
+                "name": user[0].name,
+                "visitCount": totalVisits[0].visitCount, 
+                "shortenedUrls": urlData
+            }
+
+            res.send(result).status(200);
+        
+        } else {
+            res.sendStatus(404);
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
+export async function getRanking(req, res) {
+    try {
+        const { rows: urlData, rowCount } = await connection.query(`SELECT users.id as "id", users.name as "name", COUNT(urls.url) as "linksCount", SUM(urls."visitCount") as "visitCount" 
+        FROM urls 
+        JOIN users 
+        ON urls."userId" = users.id
+        GROUP BY users.id
+        ORDER BY "visitCount" DESC
+        LIMIT 10`);
+
+        if(rowCount === 0) {
+            res.sendStatus(404);
+        }
+
+        res.send(urlData);
+        
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
 
 
 
-
-
-
-//autenticacao com dados criptografados via JWT NO CONTROLLER: 
-// https://bootcampra.notion.site/Artigo-Autentica-o-com-JWT-2e54d82b5a414bfe83ee8fb9294ff304 
