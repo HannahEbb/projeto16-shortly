@@ -1,13 +1,14 @@
 import pkg from 'pg';
+import dotenv from 'dotenv';
 
 const { Pool } = pkg;
 
 const connection = new Pool({
   host: 'localhost',
-  port: 5432,
-  user: 'macmini',
-  password: '#Inco2022',
+  port: process.env.POSTGRES_PORT,
+  user: process.env.USER,
+  password: process.env.POSTGRES_PASSWORD,
   database: 'shortly'
-});
+}); 
 
-export default connection;
+export default connection; 

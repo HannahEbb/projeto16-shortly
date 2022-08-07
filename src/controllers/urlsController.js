@@ -24,9 +24,8 @@ export async function createUrl(req, res) {
         ]);
 
         if(rowCount > 0) {
-            //pode criar seu shorts
             const short = nanoid();
-            //insere dados no banco, na tabela urls
+            
             await connection.query('INSERT INTO urls ("userId", "shortUrl", url, "visitCount", "createdAt") VALUES ($1, $2, $3, $4, $5)', 
             [data.userId, short, url, 0, dayjs().format('DD/MM/YYYY')]);
 
@@ -52,7 +51,7 @@ export async function getUrlById(req, res) {
         );
 
     if(rowCount === 0) {
-        return res.sendStatus(404); // a url não existe
+        return res.sendStatus(404); 
     }
 
     res.send(url[0]).status(200);
@@ -72,7 +71,7 @@ export async function getShortUrl(req, res) {
         );
 
     if(rowCount === 0) {
-        return res.sendStatus(404); // a url não existe
+        return res.sendStatus(404); 
     }
 
     await connection.query(

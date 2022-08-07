@@ -10,7 +10,7 @@ dotenv.config();
 export async function signUp(req, res) {
     try {
         const newUser = req.body;
-        const hashPassword = hashSync(newUser.password, 13);
+        const hashPassword = hashSync(newUser.password, process.env.HASHSYNC_SECRET);
         
         const { rowCount } = await connection.query('SELECT * FROM users WHERE email = $1', [
             newUser.email
@@ -28,7 +28,7 @@ export async function signUp(req, res) {
 
     } catch(error) {
         console.log(error);
-        res.sendStatus(500); //conferir na doc
+        res.sendStatus(500); 
     }
 }
 
