@@ -15,4 +15,4 @@ app.use(router);
 
 const PORT = process.env.PORT || 5009;
 
-app.listen(PORT, () => console.log('Rodou suave demais..'));
+app.listen(PORT, () => console.log('Servidor rodando OK'));

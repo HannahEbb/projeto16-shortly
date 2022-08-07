@@ -5,7 +5,7 @@ import { customAlphabet } from "nanoid";
 
 import connection from '../db/pgsql.js';
 
-const nanoid = customAlphabet("abcdefghijklmnopqrstuv0987654321", 6);
+const nanoid = customAlphabet("abcdefghijklmnopqrstuv0987654321", 7);
 
 
 export async function createUrl(req, res) {
@@ -40,5 +40,84 @@ export async function createUrl(req, res) {
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
+    }
+}
+
+export async function getUrlById(req, res) {
+    const { id } = req.params;
+
+    try {
+        const { rows: url, rowCount } = await connection.query(
+            'SELECT id, "shortUrl", url FROM urls WHERE id = $1', [id]
+        );
+
+    if(rowCount === 0) {
+        return res.sendStatus(404); // a url não existe
+    }
+
+    res.send(url[0]).status(200);
+        
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
+export async function getShortUrl(req, res) {
+    const { shortUrl } = req.params;
+
+    try {
+        const { rows: url, rowCount } = await connection.query(
+            'SELECT * FROM urls WHERE "shortUrl" = $1', [shortUrl]
+        );
+
+    if(rowCount === 0) {
+        return res.sendStatus(404); // a url não existe
+    }
+
+    await connection.query(
+        `UPDATE urls
+        SET 
+        "visitCount" = $1
+        WHERE id = $2`,
+        [url[0].visitCount +1, url[0].id]
+    );
+
+    res.redirect(200, url[0].url);
+        
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
+export async function deleteUrlById(req, res) {
+    const { id } = req.params;
+
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const data = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(!data) {
+            return res.sendStatus(401); //token inexistente 
+        }
+
+        const { rowCount } = await connection.query('SELECT * FROM urls WHERE id = $1 AND "userId" = $2', [
+            id, data.userId
+        ]);
+
+        if(rowCount > 0) {
+            await connection.query('DELETE FROM urls WHERE id = $1', [id]);
+            res.sendStatus(204);
+
+        } else {
+            return res.status(401); // shortUrl nao pertecnce a este user ou shortUrl nao existe
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+        
     }
 }
