@@ -2,12 +2,13 @@ import pkg from 'pg';
 
 const { Pool } = pkg;
 
-const connection = new Pool({
-  host: 'localhost',
-  port: process.env.POSTGRES_PORT,
-  user: process.env.USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: 'shortly'//process.env.DATABASE
-}); 
+const databaseConfig = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+      rejectUnauthorized: false
+  }
+}
 
-export default connection; 
+const connection = new Pool(databaseConfig);
+
+export default connection;
