@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import dayjs from "dayjs";
 import jwt from "jsonwebtoken";
 import { customAlphabet } from "nanoid";
@@ -16,7 +15,7 @@ export async function createUrl(req, res) {
         const data = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!data) {
-            return res.sendStatus(401); //token inexistente 
+            return res.sendStatus(401); 
         }
 
         const { rowCount } = await connection.query('SELECT * FROM users WHERE id = $1', [
@@ -32,7 +31,7 @@ export async function createUrl(req, res) {
             res.send({ shortUrl: short }).status(201);
 
         } else {
-            return res.sendStatus(401); // token inválido - não pertence a usuario cadastrado
+            return res.sendStatus(404); 
         }
 
 
@@ -98,7 +97,7 @@ export async function deleteUrlById(req, res) {
         const data = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!data) {
-            return res.sendStatus(401); //token inexistente 
+            return res.sendStatus(401); 
         }
 
         const { rowCount } = await connection.query('SELECT * FROM urls WHERE id = $1 AND "userId" = $2', [
@@ -110,13 +109,12 @@ export async function deleteUrlById(req, res) {
             res.sendStatus(204);
 
         } else {
-            return res.status(401); // shortUrl nao pertecnce a este user ou shortUrl nao existe
+            return res.status(404); 
         }
 
 
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
-        
     }
 }

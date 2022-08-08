@@ -1,16 +1,13 @@
-import dotenv from "dotenv";
 import dayjs from "dayjs";
 import jwt from "jsonwebtoken";
 import { hashSync, compareSync } from "bcrypt";
 
 import connection from '../db/pgsql.js';
 
-dotenv.config();
-
 export async function signUp(req, res) {
     try {
         const newUser = req.body;
-        const hashPassword = hashSync(newUser.password, process.env.HASHSYNC_SECRET);
+        const hashPassword = hashSync(newUser.password, 13);
         
         const { rowCount } = await connection.query('SELECT * FROM users WHERE email = $1', [
             newUser.email
@@ -73,7 +70,7 @@ export async function getUserMe(req, res) {
         const data = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!data) {
-            return res.sendStatus(401); //token inexistente 
+            return res.sendStatus(401); 
         }
 
         const { rows: user, rowCount } = await connection.query('SELECT * FROM users WHERE id = $1', [
